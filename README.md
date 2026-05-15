@@ -75,7 +75,18 @@ The goal of this project is to explore practical AI workflow automation and scal
 
 ## Screenshots
 
-(Add workflow screenshots here)
+## Screenshots
+
+### Workflow Architecture
+![Workflow](screenshots/workflow.png)
+
+### Notion Database
+![Notion](screenshots/notion-database.png)
+
+### Generated Output
+![Output](screenshots/generated-output.png)
+
+![Output](screenshots/generated-output2.png)
 
 ---
 
