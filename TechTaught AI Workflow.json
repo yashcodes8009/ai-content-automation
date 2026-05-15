@@ -1,0 +1,153 @@
+{
+  "name": "TechTaught AI Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_GROQ_API_KEY_HERE"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"model\": \"llama-3.1-8b-instant\",\n    \"messages\": [\n      {\n        \"role\": \"user\",\n        \"content\": \"Topic: \" + $json[\"Topic\"] + \". Input points: \" + $json[\"Bullet Points\"] + \". Create Instagram content. Output must start exactly with CAROUSEL SCRIPT:. Format each slide on a new line with labels exactly like Slide 1:, Slide 2:, Slide 3:, Slide 4:, Slide 5:, Slide 6:. Then write CAPTION: and HASHTAGS:. Rules: exactly 6 slides only. Each slide max 12 words. Slide 1 is a curiosity hook. Slide 6 must be exactly: Save this post and follow @tech.taught. Do not repeat input points. Do not include images. Do not include rules. Do not add extra sections. Caption max 2 short lines. Include exactly 8 hashtags. No emojis.\"\n      }\n    ]\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "25acbef9-2b6e-40bb-9875-9d2081f05a72",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "oAuth2",
+        "databaseId": {
+          "__rl": true,
+          "value": "35cc2a06-a6dc-80d1-955b-f931f0f18d3f",
+          "mode": "list",
+          "cachedResultName": "TechTaught Content System",
+          "cachedResultUrl": "https://www.notion.so/35cc2a06a6dc80d1955bf931f0f18d3f"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        192,
+        -48
+      ],
+      "id": "9d1c8404-92b1-4cb7-b7e0-0e6fedcccc23",
+      "name": "Notion Trigger",
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "WtyeEgusfoRQTDn2",
+          "name": "Notion OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{$node[\"Notion Trigger\"].json[\"id\"]}}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Carousel Script|rich_text",
+              "richText": true,
+              "text": {
+                "text": [
+                  {
+                    "text": "={{$node[\"HTTP Request\"].json[\"choices\"][0][\"message\"][\"content\"]}}",
+                    "annotationUi": {}
+                  }
+                ]
+              }
+            },
+            {
+              "key": "Status|select",
+              "selectValue": "Writing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        64
+      ],
+      "id": "b7794f5b-4f9b-4749-91a9-a6c77ec9c820",
+      "name": "Update a database page",
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "WtyeEgusfoRQTDn2",
+          "name": "Notion OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Update a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e466f912-bb5e-4c6b-9fed-7fb94ff1c8f3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "32e1f2f65c0809fa68b8030b0141443b48a73ebeec491db20db4af77e481154f"
+  },
+  "id": "j1SA0FDcYrPqzsfz",
+  "tags": []
+}
