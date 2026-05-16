@@ -18,6 +18,7 @@ An AI-powered content automation workflow built using **n8n**, **Notion**, and *
 
 ## Workflow Architecture
 
+```text
 Notion Database
 ↓
 n8n Trigger Automation
@@ -27,6 +28,7 @@ Groq AI API Processing
 Carousel Script Generation
 ↓
 Automatic Database Update
+```
 
 ---
 
